@@ -21,6 +21,7 @@ func usage() {
 func main() {
 	flag.Usage = usage
 	pretty := flag.Bool("pretty", true, "Format JSON")
+	verbose := flag.Bool("verbose", false, "Verbose output")
 	flag.Parse()
 	nargs := flag.NArg()
 	if nargs != 2 {
@@ -28,6 +29,9 @@ func main() {
 	}
 
 	api := anaconda.NewTwitterApiWithCredentials(shared.Config.AccessToken, shared.Config.AccessTokenSecret, shared.Config.ConsumerKey, shared.Config.ConsumerSecret)
+	if *verbose {
+		api.Log = anaconda.BasicLogger
+	}
 	v := url.Values{}
 	v.Add("track", flag.Arg(0))
 	s := api.PublicStreamFilter(v)
